@@ -5,6 +5,7 @@ services:
     region: singapore
     plan: free
     dockerfilePath: ./backend/Dockerfile
+    port: 10000
     envVars:
       - key: DATABASE_URL
         scope: run
