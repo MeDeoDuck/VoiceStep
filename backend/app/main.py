@@ -47,6 +47,7 @@ def health() -> dict:
 
 
 @app.get("/")
+@app.head("/")
 def root() -> dict:
     return {"service": settings.APP_NAME, "docs": "/docs"}
 
