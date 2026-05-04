@@ -2,6 +2,7 @@ services:
   - type: web
     name: voicestep-backend
     runtime: docker
+    buildCommand: "echo 'Rebuilding...'"
     region: singapore
     plan: free
     dockerfilePath: ./backend/Dockerfile
