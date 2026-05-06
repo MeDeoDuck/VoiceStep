@@ -11,13 +11,6 @@ from app.db.schemas import AuthSyncRequest, UserOut
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 
-@router.options("", include_in_schema=False)
-@router.options("/sync", include_in_schema=False)
-@router.options("/me", include_in_schema=False)
-async def auth_options():
-    return {}
-
-
 @router.post("/sync", response_model=UserOut)
 def sync_user(
     payload: AuthSyncRequest,

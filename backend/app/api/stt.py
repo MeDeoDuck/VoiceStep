@@ -19,12 +19,6 @@ router = APIRouter(prefix="/api/stt", tags=["stt"])
 MAX_AUDIO_BYTES = 8 * 1024 * 1024  # 8MB cap
 
 
-@router.options("", include_in_schema=False)
-@router.options("/transcribe", include_in_schema=False)
-async def stt_options():
-    return {}
-
-
 @router.post("/transcribe", response_model=TranscribeResponse)
 async def transcribe(
     audio_file: UploadFile = File(...),

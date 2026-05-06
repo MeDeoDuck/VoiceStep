@@ -14,12 +14,6 @@ from app.services import conversation_service, report_service
 router = APIRouter(prefix="/api/reports", tags=["reports"])
 
 
-@router.options("", include_in_schema=False)
-@router.options("/{report_id}", include_in_schema=False)
-async def reports_options():
-    return {}
-
-
 @router.get("", response_model=list[ReportListItem])
 def list_reports(
     user: User = Depends(get_current_user),

@@ -21,13 +21,6 @@ from app.services import conversation_service
 router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 
 
-@router.options("", include_in_schema=False)
-@router.options("/{session_id}", include_in_schema=False)
-@router.options("/{session_id}/reply", include_in_schema=False)
-async def sessions_options():
-    return {}
-
-
 @router.post("", response_model=CreateSessionResponse)
 def create_session(
     body: CreateSessionRequest,

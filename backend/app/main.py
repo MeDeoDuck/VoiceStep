@@ -41,11 +41,6 @@ app.add_middleware(
 )
 
 
-@app.options("/{path:path}", include_in_schema=False)
-async def preflight_handler(path: str):
-    return {}
-
-
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok", "app": settings.APP_NAME, "env": settings.APP_ENV}
