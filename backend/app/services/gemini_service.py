@@ -5,6 +5,8 @@ import logging
 import re
 from typing import Any, Optional
 
+from groq import Groq
+
 from app.core.config import get_settings
 from app.services.prompt_loader import load_conversation_prompt, load_report_prompt
 
@@ -45,33 +47,34 @@ _FALLBACK_REPORT_WORK = {
 }
 
 
-def _get_model():
-    """Return a configured GenerativeModel or None if API key not set."""
+def _get_client():
+    """Return a configured Groq client or None if API key not set."""
     settings = get_settings()
-    if not settings.GEMINI_API_KEY:
-        logger.warning("GEMINI_API_KEY not configured; Gemini calls will use fallbacks.")
+    if not settings.GROQ_API_KEY:
+        logger.warning("GROQ_API_KEY not configured; LLM calls will use fallbacks.")
         return None
     try:
-        import google.generativeai as genai
-
-        genai.configure(api_key=settings.GEMINI_API_KEY)
-        client = genai.GenerativeModel(settings.GEMINI_MODEL)
+        client = Groq(api_key=settings.GROQ_API_KEY)
         return client
     except Exception as exc:  # noqa: BLE001
-        logger.exception("Failed to load Gemini model: %s", exc)
+        logger.exception("Failed to load Groq client: %s", exc)
         return None
 
 
 def _generate_text(prompt: str, max_chars: int = 2000) -> Optional[str]:
-    client = _get_model()
+    client = _get_client()
     if client is None:
         return None
     try:
-        response = client.generate_content(prompt)
-        text = (response.text or "").strip()
+        settings = get_settings()
+        message = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model=settings.GROQ_MODEL,
+        )
+        text = (message.choices[0].message.content or "").strip()
         return text[:max_chars] if text else None
     except Exception as exc:  # noqa: BLE001
-        logger.exception("Gemini generate_content failed: %s", exc)
+        logger.exception("Groq generate_content failed: %s", exc)
         return None
 
 
