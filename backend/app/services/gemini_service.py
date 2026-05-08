@@ -52,10 +52,10 @@ def _get_model():
         logger.warning("GEMINI_API_KEY not configured; Gemini calls will use fallbacks.")
         return None
     try:
-        from google.genai import types
-        from google.genai.client import Client
+        import google.generativeai as genai
 
-        client = Client(api_key=settings.GEMINI_API_KEY)
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        client = genai.GenerativeModel(settings.GEMINI_MODEL)
         return client
     except Exception as exc:  # noqa: BLE001
         logger.exception("Failed to load Gemini model: %s", exc)
@@ -67,11 +67,7 @@ def _generate_text(prompt: str, max_chars: int = 2000) -> Optional[str]:
     if client is None:
         return None
     try:
-        settings = get_settings()
-        response = client.models.generate_content(
-            model=settings.GEMINI_MODEL,
-            contents=prompt,
-        )
+        response = client.generate_content(prompt)
         text = (response.text or "").strip()
         return text[:max_chars] if text else None
     except Exception as exc:  # noqa: BLE001
