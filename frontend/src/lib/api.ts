@@ -110,3 +110,21 @@ export async function getReport(reportId: string): Promise<ReportDetail> {
   const res = await fetch(`${BASE_URL}/api/reports/${reportId}`, { headers });
   return handle<ReportDetail>(res);
 }
+
+export type ReportStats = {
+  total_count: number;
+  history: Array<{ date: string; score: number; scenario_type: string }>;
+  avg_by_scenario: Record<string, number>;
+  category_avgs: Record<string, number>;
+};
+
+export async function getReportStats(): Promise<ReportStats> {
+  const headers = await authHeaders();
+  const res = await fetch(`${BASE_URL}/api/reports/stats/summary`, { headers });
+  return handle<ReportStats>(res);
+}
+
+export async function getComfortMessage(): Promise<{ message: string }> {
+  const res = await fetch(`${BASE_URL}/api/comfort/message`);
+  return handle<{ message: string }>(res);
+}

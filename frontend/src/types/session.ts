@@ -1,4 +1,4 @@
-export type ScenarioType = "interview" | "work";
+export type ScenarioType = "interview" | "work" | "presentation" | "meeting" | "customer";
 export type SessionStatus = "active" | "completed" | "cancelled";
 
 export type CreateSessionResponse = {

@@ -8,6 +8,7 @@ import NewSessionPage from "@/routes/NewSessionPage";
 import ConversationPage from "@/routes/ConversationPage";
 import ReportsPage from "@/routes/ReportsPage";
 import ReportDetailPage from "@/routes/ReportDetailPage";
+import ProgressPage from "@/routes/ProgressPage";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/session/:sessionId" element={<ConversationPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/reports/:reportId" element={<ReportDetailPage />} />
+          <Route path="/progress" element={<ProgressPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

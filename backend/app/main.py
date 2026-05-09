@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import auth as auth_router
+from app.api import comfort as comfort_router
 from app.api import llm as llm_router
 from app.api import reports as reports_router
 from app.api import sessions as sessions_router
@@ -57,3 +58,4 @@ app.include_router(sessions_router.router)
 app.include_router(stt_router.router)
 app.include_router(reports_router.router)
 app.include_router(llm_router.router)
+app.include_router(comfort_router.router)

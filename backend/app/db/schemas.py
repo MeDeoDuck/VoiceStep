@@ -6,7 +6,7 @@ from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-ScenarioType = Literal["interview", "work"]
+ScenarioType = Literal["interview", "work", "presentation", "meeting", "customer"]
 SessionStatus = Literal["active", "completed", "cancelled"]
 MessageRole = Literal["ai", "user", "system"]
 

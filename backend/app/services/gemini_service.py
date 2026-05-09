@@ -46,6 +46,57 @@ _FALLBACK_REPORT_WORK = {
     "next_practice": "업무 상황을 좀 더 구체적으로 표현하는 연습을 추천합니다.",
 }
 
+_FALLBACK_REPORT_PRESENTATION = {
+    "title": "발표 연습 결과",
+    "total_score": 70,
+    "summary": "발표가 완료되었지만 자동 보고서 생성 중 일부 문제가 발생했습니다. 전체 발표 기록을 바탕으로 다시 연습해보는 것을 추천합니다.",
+    "scores": {
+        "clarity": 14,
+        "structure": 13,
+        "delivery": 14,
+        "audience_awareness": 14,
+        "actionability": 15,
+    },
+    "strengths": ["발표를 끝까지 완료했습니다."],
+    "weaknesses": ["상세 분석을 다시 생성해야 합니다."],
+    "recommendations": ["같은 주제로 한 번 더 연습해보세요."],
+    "next_practice": "발표의 논리적 구조를 더 명확하게 정리하는 연습을 추천합니다.",
+}
+
+_FALLBACK_REPORT_MEETING = {
+    "title": "회의 발언 연습 결과",
+    "total_score": 70,
+    "summary": "회의 발언이 완료되었지만 자동 보고서 생성 중 일부 문제가 발생했습니다. 전체 대화 기록을 바탕으로 다시 연습해보는 것을 추천합니다.",
+    "scores": {
+        "clarity": 14,
+        "reasoning": 13,
+        "timing": 14,
+        "collaboration": 14,
+        "actionability": 15,
+    },
+    "strengths": ["회의 발언을 끝까지 완료했습니다."],
+    "weaknesses": ["상세 분석을 다시 생성해야 합니다."],
+    "recommendations": ["같은 상황으로 한 번 더 연습해보세요."],
+    "next_practice": "의견을 근거와 함께 제시하는 연습을 추천합니다.",
+}
+
+_FALLBACK_REPORT_CUSTOMER = {
+    "title": "고객응대 연습 결과",
+    "total_score": 70,
+    "summary": "고객응대가 완료되었지만 자동 보고서 생성 중 일부 문제가 발생했습니다. 전체 대화 기록을 바탕으로 다시 연습해보는 것을 추천합니다.",
+    "scores": {
+        "clarity": 14,
+        "empathy": 14,
+        "problem_solving": 13,
+        "communication": 14,
+        "follow_up": 15,
+    },
+    "strengths": ["고객응대를 끝까지 완료했습니다."],
+    "weaknesses": ["상세 분석을 다시 생성해야 합니다."],
+    "recommendations": ["같은 상황으로 한 번 더 연습해보세요."],
+    "next_practice": "고객의 요청을 명확하게 정리하고 구체적 해결책을 제시하는 연습을 추천합니다.",
+}
+
 
 def _get_client():
     """Return a configured Groq client or None if API key not set."""
@@ -80,7 +131,12 @@ def _generate_text(prompt: str, max_chars: int = 2000) -> Optional[str]:
 
 def get_first_question(scenario_type: str, job: Optional[str] = None) -> str:
     prompt = load_conversation_prompt(scenario_type)
-    return (prompt.get("first_question") or "").strip()
+    first_q = (prompt.get("first_question") or "").strip()
+    if job and "{topic}" in first_q:
+        first_q = first_q.replace("{topic}", job)
+    elif job and "{job}" in first_q:
+        first_q = first_q.replace("{job}", job)
+    return first_q
 
 
 def generate_next_question(
@@ -221,4 +277,11 @@ def generate_report(scenario_type: str, messages: list[dict[str, str]]) -> dict[
         return parsed
 
     logger.warning("Falling back to default report (Gemini parsing failed).")
-    return _FALLBACK_REPORT_INTERVIEW.copy() if scenario_type == "interview" else _FALLBACK_REPORT_WORK.copy()
+    fallback_map = {
+        "interview": _FALLBACK_REPORT_INTERVIEW,
+        "work": _FALLBACK_REPORT_WORK,
+        "presentation": _FALLBACK_REPORT_PRESENTATION,
+        "meeting": _FALLBACK_REPORT_MEETING,
+        "customer": _FALLBACK_REPORT_CUSTOMER,
+    }
+    return fallback_map.get(scenario_type, _FALLBACK_REPORT_INTERVIEW).copy()

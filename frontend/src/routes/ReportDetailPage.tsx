@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import LoadingState from "@/components/LoadingState";
 import ChatMessageList from "@/components/ChatMessageList";
-import { getReport } from "@/lib/api";
+import { getReport, getComfortMessage } from "@/lib/api";
 import type { ReportDetail } from "@/types/report";
 import type { ChatMessage } from "@/types/message";
 
@@ -14,6 +14,7 @@ const SCENARIO_LABEL: Record<string, string> = {
 export default function ReportDetailPage() {
   const { reportId } = useParams<{ reportId: string }>();
   const [report, setReport] = useState<ReportDetail | null>(null);
+  const [comfortMessage, setComfortMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,6 +23,13 @@ export default function ReportDetailPage() {
     getReport(reportId)
       .then((r) => !cancelled && setReport(r))
       .catch((e) => !cancelled && setError(e instanceof Error ? e.message : String(e)));
+
+    getComfortMessage()
+      .then((r) => !cancelled && setComfortMessage(r.message))
+      .catch(() => {
+        // ignore error for comfort message
+      });
+
     return () => {
       cancelled = true;
     };
@@ -153,6 +161,13 @@ export default function ReportDetailPage() {
           <ChatMessageList messages={chatMessages} showOriginalStt />
         </div>
       </div>
+
+      {comfortMessage && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <div className="text-xs font-medium text-amber-700">오늘의 응원 메시지</div>
+          <p className="mt-2 text-sm text-amber-900">{comfortMessage}</p>
+        </div>
+      )}
     </div>
   );
 }

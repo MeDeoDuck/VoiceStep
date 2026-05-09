@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { transcribeAudio, type TranscribeResult } from "@/lib/api";
+import { transcribeAudio, type TranscribeResult, getComfortMessage } from "@/lib/api";
 
 type Props = {
   sessionId: string;
@@ -17,6 +17,7 @@ export default function AudioRecorder({
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [comfortMessage, setComfortMessage] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -97,6 +98,14 @@ export default function AudioRecorder({
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       setError(msg || "음성 변환에 실패했습니다. 다시 시도해주세요.");
+
+      // 위로글 가져오기
+      try {
+        const comfort = await getComfortMessage();
+        setComfortMessage(comfort.message);
+      } catch {
+        // ignore
+      }
     } finally {
       setIsUploading(false);
     }
@@ -126,8 +135,13 @@ export default function AudioRecorder({
         {isUploading && <span className="text-xs text-slate-500">음성을 텍스트로 변환 중...</span>}
       </div>
       {error && (
-        <div className="rounded border border-rose-200 bg-rose-50 p-2 text-sm text-rose-700">
-          {error}
+        <div className="space-y-2">
+          <div className="rounded border border-rose-200 bg-rose-50 p-2 text-sm text-rose-700">
+            {error}
+          </div>
+          {comfortMessage && (
+            <p className="text-xs text-emerald-700 italic">{comfortMessage}</p>
+          )}
         </div>
       )}
       <p className="text-xs text-slate-400">
