@@ -1,17 +1,6 @@
 {
-  "buildCommand": "cd frontend && npm run build",
+  "buildCommand": "bash -c 'cd frontend && npm run build'",
   "outputDirectory": "frontend/dist",
   "framework": "vite",
-  "env": {
-    "FORCE_REBUILD": "true"
-  },
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ]
+  "cwd": "."
 }
