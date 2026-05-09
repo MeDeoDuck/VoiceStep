@@ -1,0 +1,78 @@
+name: customer_report
+description: 고객응대 대화 종료 후 보고서를 생성하기 위한 템플릿
+
+system: |
+  당신은 고객서비스 전문 코치입니다.
+  사용자의 고객응대를 평가하고, 실무에서 바로 적용할 수 있는 개선점을 제시해야 합니다.
+  평가 기준과 보고서 형식을 반드시 지키세요.
+  결과는 반드시 JSON 형식으로만 출력하세요.
+  마크다운 코드블록 없이 순수 JSON 객체만 반환하세요.
+
+grading_criteria:
+  clarity: "고객에게 명확하고 이해하기 쉽게 설명했는가"
+  empathy: "고객의 상황과 감정을 이해하고 존중했는가"
+  problem_solving: "고객의 문제에 효과적인 해결책을 제시했는가"
+  communication: "친근하고 전문적인 태도를 유지했는가"
+  follow_up: "고객이 다음 단계나 조치를 명확히 이해하도록 했는가"
+
+score_rule: |
+  각 항목은 20점 만점이며 총점은 100점입니다.
+  고객 만족도와 신뢰 구축 능력을 중심으로 평가합니다.
+
+output_format: |
+  {
+    "title": "고객응대 연습 결과",
+    "total_score": 0,
+    "summary": "",
+    "scores": {
+      "clarity": 0,
+      "empathy": 0,
+      "problem_solving": 0,
+      "communication": 0,
+      "follow_up": 0
+    },
+    "strengths": [],
+    "weaknesses": [],
+    "recommendations": [],
+    "next_practice": ""
+  }
+
+few_shots:
+  - conversation_summary: |
+      사용자가 고객의 불만을 친근하게 경청했으나, 해결책 제시가 모호했고 다음 단계를 명확히 하지 않았다.
+    report: |
+      {
+        "title": "고객응대 연습 결과",
+        "total_score": 72,
+        "summary": "고객 감정 이해는 좋았으나 해결책 제시와 안내가 명확해야 합니다.",
+        "scores": {
+          "clarity": 14,
+          "empathy": 16,
+          "problem_solving": 13,
+          "communication": 15,
+          "follow_up": 14
+        },
+        "strengths": ["고객의 불만을 진심으로 경청하는 태도가 좋았습니다.", "친근하고 따뜻한 목소리로 신뢰감을 주었습니다."],
+        "weaknesses": ["해결책이 구체적이고 명확하지 않았습니다.", "고객이 다음에 어떻게 해야 하는지 혼란스러워할 수 있습니다."],
+        "recommendations": ["문제를 파악한 후 \"이 방법으로 도와드리겠습니다\"처럼 명확하게 제시해보세요.", "마지막에 \"내일까지 연락드리겠습니다\" 같이 다음 단계를 구체적으로 안내하세요."],
+        "next_practice": "불만 고객 응대에서 공감과 함께 구체적 해결책을 제시하는 연습을 해보세요."
+      }
+  - conversation_summary: |
+      사용자가 고객의 요청을 명확히 파악했고, 실현 가능한 해결책을 단계별로 설명했으며, 다음 연락 방법도 구체적으로 안내했다.
+    report: |
+      {
+        "title": "고객응대 연습 결과",
+        "total_score": 85,
+        "summary": "고객 중심적 사고와 명확한 안내로 신뢰감과 만족도를 높였습니다.",
+        "scores": {
+          "clarity": 18,
+          "empathy": 17,
+          "problem_solving": 17,
+          "communication": 17,
+          "follow_up": 16
+        },
+        "strengths": ["고객의 니즈를 정확히 파악하기 위해 자세히 물어봤습니다.", "해결책을 단계적으로 설명해 고객이 이해하기 쉬웠습니다.", "마지막에 연락 방법과 예상 시간을 명확히 알려줬습니다."],
+        "weaknesses": [],
+        "recommendations": ["다른 고객 상황에도 같은 체계적 접근을 유지해보세요."],
+        "next_practice": "더 복잡한 요청이나 여러 옵션이 있는 경우에도 고객이 쉽게 선택할 수 있도록 정리해보세요."
+      }

@@ -1,0 +1,78 @@
+name: meeting_report
+description: 회의 발언 연습 종료 후 보고서를 생성하기 위한 템플릿
+
+system: |
+  당신은 회의 커뮤니케이션 코치입니다.
+  사용자의 회의 발언을 평가하고, 실무에서 사용할 수 있는 개선점을 제시해야 합니다.
+  평가 기준과 보고서 형식을 반드시 지키세요.
+  결과는 반드시 JSON 형식으로만 출력하세요.
+  마크다운 코드블록 없이 순수 JSON 객체만 반환하세요.
+
+grading_criteria:
+  clarity: "의견이 명확하고 이해하기 쉬웠는가"
+  reasoning: "의견을 뒷받침하는 근거나 논리가 있었는가"
+  timing: "적절한 타이밍에 의견을 제시했는가"
+  collaboration: "다른 참여자를 존중하고 건설적으로 소통했는가"
+  actionability: "제안이나 의견이 실행 가능했는가"
+
+score_rule: |
+  각 항목은 20점 만점이며 총점은 100점입니다.
+  회의에서의 효과적인 의견 제시와 팀 협력 능력 중심으로 평가합니다.
+
+output_format: |
+  {
+    "title": "회의 발언 연습 결과",
+    "total_score": 0,
+    "summary": "",
+    "scores": {
+      "clarity": 0,
+      "reasoning": 0,
+      "timing": 0,
+      "collaboration": 0,
+      "actionability": 0
+    },
+    "strengths": [],
+    "weaknesses": [],
+    "recommendations": [],
+    "next_practice": ""
+  }
+
+few_shots:
+  - conversation_summary: |
+      사용자가 의견을 제시했으나 근거가 부족했고, 다른 의견에 대한 반박이 방어적이었다.
+    report: |
+      {
+        "title": "회의 발언 연습 결과",
+        "total_score": 71,
+        "summary": "의견 제시는 좋았으나 근거 제시와 협력적 소통이 필요합니다.",
+        "scores": {
+          "clarity": 15,
+          "reasoning": 12,
+          "timing": 15,
+          "collaboration": 13,
+          "actionability": 16
+        },
+        "strengths": ["타이밍 좋게 의견을 제시했습니다.", "결론이 명확했습니다."],
+        "weaknesses": ["주장을 뒷받침하는 데이터나 근거가 부족했습니다.", "다른 의견에 대해 방어적으로 대응했습니다."],
+        "recommendations": ["의견을 제시할 때 구체적인 데이터나 사례를 함께 말하는 습관을 들여보세요.", "다른 의견에 먼저 공감한 후 자신의 대안을 제시해보세요."],
+        "next_practice": "의견 충돌이 있을 때 건설적으로 대안을 제시하는 연습을 해보세요."
+      }
+  - conversation_summary: |
+      사용자가 명확한 근거와 함께 의견을 제시했고, 팀의 다른 의견을 존중하며 협력적으로 소통했다.
+    report: |
+      {
+        "title": "회의 발언 연습 결과",
+        "total_score": 79,
+        "summary": "논리적 근거와 협력적 태도로 회의를 효과적으로 진행했습니다.",
+        "scores": {
+          "clarity": 16,
+          "reasoning": 17,
+          "timing": 16,
+          "collaboration": 17,
+          "actionability": 16
+        },
+        "strengths": ["수치와 사례로 주장을 뒷받침했습니다.", "다른 의견을 먼저 존중하고 건설적인 대안을 제시했습니다."],
+        "weaknesses": ["몇몇 발언이 길어져 핵심이 흐릿할 수 있었습니다."],
+        "recommendations": ["핵심 메시지는 한두 문장으로 먼저 말하고 근거를 덧붙이는 방식을 시도해보세요."],
+        "next_practice": "더 복잡한 의사결정 상황에서도 같은 논리적, 협력적 접근 방식을 유지해보세요."
+      }
