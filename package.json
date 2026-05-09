@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "cd frontend && npm run build"
+  },
   "dependencies": {
     "firebase": "^12.12.1"
   }
