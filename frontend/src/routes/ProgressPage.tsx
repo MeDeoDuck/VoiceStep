@@ -31,6 +31,48 @@ const SCENARIO_LABELS: Record<string, string> = {
   customer: "고객응대",
 };
 
+interface ScoreTrendData {
+  date: string;
+  interview?: number;
+  work?: number;
+  presentation?: number;
+  meeting?: number;
+  customer?: number;
+}
+
+const formatDateOnly = (rawDate: string): string => {
+  if (!rawDate) return "";
+  return rawDate.includes("T") ? rawDate.split("T")[0] : rawDate.split(" ")[0];
+};
+
+const buildScoreTrendData = (history: any[]): ScoreTrendData[] => {
+  const grouped: Record<string, Record<string, number[]>> = {};
+
+  history.forEach((record) => {
+    const date = formatDateOnly(record.date);
+    const scenario = record.scenario_type || "interview";
+
+    if (!grouped[date]) {
+      grouped[date] = {};
+    }
+    if (!grouped[date][scenario]) {
+      grouped[date][scenario] = [];
+    }
+    grouped[date][scenario].push(record.score);
+  });
+
+  return Object.entries(grouped)
+    .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+    .map(([date, scenarios]) => {
+      const result: ScoreTrendData = { date };
+      Object.entries(scenarios).forEach(([scenario, scores]) => {
+        const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+        result[scenario as keyof ScoreTrendData] = parseFloat(avg.toFixed(1));
+      });
+      return result;
+    });
+};
+
 export default function ProgressPage() {
   const [stats, setStats] = useState<ReportStats | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -74,12 +116,8 @@ export default function ProgressPage() {
       ? (stats.history.reduce((sum, h) => sum + h.score, 0) / stats.history.length).toFixed(1)
       : "0";
 
-  // LineChart용 데이터 변환 (날짜별, 시나리오별로 구분된 색상)
-  const chartData = stats.history.map((h) => ({
-    date: h.date,
-    score: h.score,
-    scenario: h.scenario_type,
-  }));
+  // LineChart용 데이터 변환 (날짜별+시나리오별 평균, wide format)
+  const chartData = buildScoreTrendData(stats.history);
 
   // BarChart용 데이터 (항목별 평균)
   const categoryData = Object.entries(stats.category_avgs)
@@ -143,24 +181,18 @@ export default function ProgressPage() {
                 <YAxis domain={[0, 100]} style={{ fontSize: "12px" }} />
                 <Tooltip />
                 <Legend />
-                {Object.entries(SCENARIO_COLORS)
-                  .filter(([scenario]) => chartData.some(d => d.scenario === scenario))
-                  .map(([scenario, color]) => (
-                    <Line
-                      key={scenario}
-                      type="monotone"
-                      dataKey="score"
-                      stroke={color}
-                      dot={(props: any) => {
-                        if (props.payload?.scenario === scenario) {
-                          return <circle cx={props.cx} cy={props.cy} r={4} fill={color} />;
-                        }
-                        return <circle cx={props.cx} cy={props.cy} r={0} />;
-                      }}
-                      name={SCENARIO_LABELS[scenario] || scenario}
-                      connectNulls
-                    />
-                  ))}
+                {Object.entries(SCENARIO_COLORS).map(([scenario, color]) => (
+                  <Line
+                    key={scenario}
+                    type="monotone"
+                    dataKey={scenario}
+                    stroke={color}
+                    name={SCENARIO_LABELS[scenario]}
+                    connectNulls={false}
+                    dot={{ r: 4 }}
+                    isAnimationActive={false}
+                  />
+                ))}
               </LineChart>
             </ResponsiveContainer>
           </div>
