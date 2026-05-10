@@ -74,7 +74,7 @@ const buildScoreTrendData = (history: any[]): ScoreTrendData[] => {
       };
       Object.entries(scenarios).forEach(([scenario, scores]) => {
         const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-        (result as Record<string, number | undefined>)[scenario] = parseFloat(avg.toFixed(1));
+        (result as any)[scenario] = parseFloat(avg.toFixed(1));
       });
       return result;
     });
