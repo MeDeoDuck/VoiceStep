@@ -82,10 +82,12 @@ export default function ProgressPage() {
   }));
 
   // BarChart용 데이터 (항목별 평균)
-  const categoryData = Object.entries(stats.category_avgs).map(([category, avg]) => ({
-    category,
-    score: parseFloat(avg.toFixed(1)),
-  }));
+  const categoryData = Object.entries(stats.category_avgs)
+    .map(([category, avg]) => ({
+      category,
+      score: parseFloat(avg.toFixed(1)),
+    }))
+    .filter(item => item.score > 0);
 
   return (
     <div className="space-y-6">
@@ -141,22 +143,24 @@ export default function ProgressPage() {
                 <YAxis domain={[0, 100]} style={{ fontSize: "12px" }} />
                 <Tooltip />
                 <Legend />
-                {Object.entries(SCENARIO_COLORS).map(([scenario, color]) => (
-                  <Line
-                    key={scenario}
-                    type="monotone"
-                    dataKey="score"
-                    stroke={color}
-                    dot={(props: any) => {
-                      if (props.payload?.scenario === scenario) {
-                        return <circle cx={props.cx} cy={props.cy} r={4} fill={color} />;
-                      }
-                      return <circle cx={props.cx} cy={props.cy} r={0} />;
-                    }}
-                    name={SCENARIO_LABELS[scenario] || scenario}
-                    connectNulls
-                  />
-                ))}
+                {Object.entries(SCENARIO_COLORS)
+                  .filter(([scenario]) => chartData.some(d => d.scenario === scenario))
+                  .map(([scenario, color]) => (
+                    <Line
+                      key={scenario}
+                      type="monotone"
+                      dataKey="score"
+                      stroke={color}
+                      dot={(props: any) => {
+                        if (props.payload?.scenario === scenario) {
+                          return <circle cx={props.cx} cy={props.cy} r={4} fill={color} />;
+                        }
+                        return <circle cx={props.cx} cy={props.cy} r={0} />;
+                      }}
+                      name={SCENARIO_LABELS[scenario] || scenario}
+                      connectNulls
+                    />
+                  ))}
               </LineChart>
             </ResponsiveContainer>
           </div>
