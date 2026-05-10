@@ -149,11 +149,11 @@ export default function ProgressPage() {
                     type="monotone"
                     dataKey="score"
                     stroke={color}
-                    dot={(props) => {
+                    dot={(props: any) => {
                       if (props.payload?.scenario === scenario) {
                         return <circle cx={props.cx} cy={props.cy} r={4} fill={color} />;
                       }
-                      return null;
+                      return <circle cx={props.cx} cy={props.cy} r={0} />;
                     }}
                     name={SCENARIO_LABELS[scenario] || scenario}
                     connectNulls
