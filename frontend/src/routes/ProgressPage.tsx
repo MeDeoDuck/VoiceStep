@@ -113,23 +113,21 @@ export default function ProgressPage() {
       </div>
 
       {/* 시나리오별 평균 카드 */}
-      {Object.keys(stats.avg_by_scenario).length > 0 && (
-        <div className="rounded-2xl border bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold">시나리오별 평균</h2>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {Object.entries(stats.avg_by_scenario).map(([scenario, avg]) => (
-              <div key={scenario} className="flex items-center justify-between rounded-md border p-2">
-                <span className="text-sm font-medium text-slate-700">
-                  {SCENARIO_LABELS[scenario] || scenario}
-                </span>
-                <span className="text-lg font-bold text-slate-900">
-                  {parseFloat(avg.toFixed(1))}
-                </span>
-              </div>
-            ))}
-          </div>
+      <div className="rounded-2xl border bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-semibold">시나리오별 평균</h2>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {Object.keys(SCENARIO_LABELS).map((scenario) => (
+            <div key={scenario} className="flex items-center justify-between rounded-md border p-2">
+              <span className="text-sm font-medium text-slate-700">
+                {SCENARIO_LABELS[scenario]}
+              </span>
+              <span className="text-lg font-bold text-slate-900">
+                {stats.avg_by_scenario[scenario] ? parseFloat(stats.avg_by_scenario[scenario].toFixed(1)) : 0}
+              </span>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* 날짜별 점수 추이 */}
       {chartData.length > 0 && (
