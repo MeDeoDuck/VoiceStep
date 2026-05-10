@@ -64,10 +64,17 @@ const buildScoreTrendData = (history: any[]): ScoreTrendData[] => {
   return Object.entries(grouped)
     .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
     .map(([date, scenarios]) => {
-      const result: ScoreTrendData = { date };
+      const result: ScoreTrendData = {
+        date,
+        interview: undefined,
+        work: undefined,
+        presentation: undefined,
+        meeting: undefined,
+        customer: undefined
+      };
       Object.entries(scenarios).forEach(([scenario, scores]) => {
         const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-        result[scenario as keyof ScoreTrendData] = parseFloat(avg.toFixed(1));
+        (result as Record<string, number | undefined>)[scenario] = parseFloat(avg.toFixed(1));
       });
       return result;
     });
