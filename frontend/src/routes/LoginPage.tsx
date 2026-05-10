@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInEmail, signInGoogle, signUpEmail } from "@/lib/auth";
+import { signInEmail, signUpEmail } from "@/lib/auth";
 import { useAuth } from "@/components/AuthProvider";
 
 export default function LoginPage() {
@@ -47,18 +47,6 @@ export default function LoginPage() {
     }
   }
 
-  async function handleGoogle() {
-    setError(null);
-    setSubmitting(true);
-    try {
-      await signInGoogle();
-      navigate("/dashboard", { replace: true });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "구글 로그인 실패");
-    } finally {
-      setSubmitting(false);
-    }
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
@@ -116,19 +104,6 @@ export default function LoginPage() {
             {submitting ? "처리 중..." : mode === "signin" ? "로그인" : "회원가입"}
           </button>
         </form>
-
-        <div className="my-4 flex items-center gap-3 text-xs text-slate-400">
-          <span className="h-px flex-1 bg-slate-200" /> 또는 <span className="h-px flex-1 bg-slate-200" />
-        </div>
-
-        <button
-          type="button"
-          onClick={handleGoogle}
-          disabled={submitting}
-          className="w-full rounded-md border py-2 text-sm font-medium hover:bg-slate-50"
-        >
-          Google 계정으로 로그인
-        </button>
       </div>
     </div>
   );
